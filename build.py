@@ -110,6 +110,7 @@ def GetCmakeArgs( parsed_args ):
   cmake_args = []
   if parsed_args.clang_completer:
     cmake_args.append( '-DUSE_CLANG_COMPLETER=ON' )
+    cmake_args.append( '-DPATH_TO_LLVM_ROOT=/opt/clang3.4' )
 
   if parsed_args.system_libclang:
     cmake_args.append( '-DUSE_SYSTEM_LIBCLANG=ON' )

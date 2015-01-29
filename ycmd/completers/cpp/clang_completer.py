@@ -25,6 +25,9 @@ from ycmd.utils import ToUtf8IfNeeded
 from ycmd.completers.completer import Completer
 from ycmd.completers.cpp.flags import Flags, PrepareFlagsForClang
 from ycmd.completers.cpp.ephemeral_values_set import EphemeralValuesSet
+import logging
+
+LOGGER = logging.getLogger( "ycmd" )
 
 CLANG_FILETYPES = set( [ 'c', 'cpp', 'objc', 'objcpp' ] )
 MIN_LINES_IN_FILE_TO_PARSE = 5
@@ -75,9 +78,14 @@ class ClangCompleter( Completer ):
 
 
   def ComputeCandidatesInner( self, request_data ):
+    LOGGER.info("ComputeCandidates clang")
     filename = request_data[ 'filepath' ]
     if not filename:
       return
+
+    compfilename = filename
+    filename = self._ParentForRequest( filename )
+    LOGGER.info("ComputeCandidatesInner parent [%s] =  %s", compfilename, filename)
 
     if self._completer.UpdatingTranslationUnit( ToUtf8IfNeeded( filename ) ):
       raise RuntimeError( PARSING_FILE_MESSAGE )
@@ -92,6 +100,7 @@ class ClangCompleter( Completer ):
     with self._files_being_compiled.GetExclusive( filename ):
       results = self._completer.CandidatesForLocationInFile(
           ToUtf8IfNeeded( filename ),
+          ToUtf8IfNeeded( compfilename ),
           line,
           column,
           files,
@@ -264,6 +273,9 @@ class ClangCompleter( Completer ):
     client_data = request_data.get( 'extra_conf_data', None )
     return self._flags.FlagsForFile( filename, client_data = client_data )
 
+  def _ParentForRequest( self, filename ):
+    LOGGER.info("self._flags.ParentForFile( ToUtf8IfNeeded(filename) ) =%s", self._flags.ParentForFile( ToUtf8IfNeeded(filename) ))
+    return self._flags.ParentForFile( ToUtf8IfNeeded(filename) )
 
 def ConvertCompletionData( completion_data ):
   return responses.BuildCompletionData(

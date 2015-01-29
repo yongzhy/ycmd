@@ -151,6 +151,7 @@ void TranslationUnit::ReparseForIndexing(
 
 
 std::vector< CompletionData > TranslationUnit::CandidatesForLocation(
+  const std::string &compfilename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files ) {
@@ -176,7 +177,7 @@ std::vector< CompletionData > TranslationUnit::CandidatesForLocation(
 
   CodeCompleteResultsWrap results(
     clang_codeCompleteAt( clang_translation_unit_,
-                          filename_.c_str(),
+                          compfilename.c_str(),
                           line,
                           column,
                           const_cast<CXUnsavedFile *>( unsaved ),

@@ -62,6 +62,7 @@ public:
   void ReparseForIndexing( const std::vector< UnsavedFile > &unsaved_files );
 
   std::vector< CompletionData > CandidatesForLocation(
+    const std::string &compfilename,
     int line,
     int column,
     const std::vector< UnsavedFile > &unsaved_files );

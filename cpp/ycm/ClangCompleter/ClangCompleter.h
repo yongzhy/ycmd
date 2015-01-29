@@ -52,6 +52,7 @@ public:
 
   std::vector< CompletionData > CandidatesForLocationInFile(
     const std::string &filename,
+    const std::string &compfilename, 
     int line,
     int column,
     const std::vector< UnsavedFile > &unsaved_files,

@@ -49,7 +49,8 @@ bottle.Request.MEMFILE_MAX = 1000 * 1024
 
 # TODO: rename these to _lower_case
 SERVER_STATE = None
-LOGGER = logging.getLogger( __name__ )
+LOGGER = logging.getLogger( "ycmd" )
+#LOGGER = logging.getLogger( __name__ )
 app = bottle.Bottle()
 
 

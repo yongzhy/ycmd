@@ -111,6 +111,7 @@ std::vector< Diagnostic > ClangCompleter::UpdateTranslationUnit(
 std::vector< CompletionData >
 ClangCompleter::CandidatesForLocationInFile(
   const std::string &filename,
+  const std::string &compfilename, 
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files,
@@ -122,7 +123,8 @@ ClangCompleter::CandidatesForLocationInFile(
   if ( !unit )
     return std::vector< CompletionData >();
 
-  return unit->CandidatesForLocation( line,
+  return unit->CandidatesForLocation( compfilename,
+                                      line,
                                       column,
                                       unsaved_files );
 }

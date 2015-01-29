@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with YouCompleteMe.  If not, see <http://www.gnu.org/licenses/>.
 
+import logging
 import abc
 import threading
 from ycmd.utils import ToUtf8IfNeeded, ForceSemanticCompletion, RunningInsideVim
@@ -30,6 +31,7 @@ from ycmd.completers import completer_utils
 from ycmd.responses import NoDiagnosticSupport
 
 NO_USER_COMMANDS = 'This completer does not define any commands.'
+LOGGER = logging.getLogger( "ycmd" )
 
 class Completer( object ):
   """A base class for all Completers in YCM.
@@ -114,6 +116,7 @@ class Completer( object ):
   # version of it.
   def ShouldUseNow( self, request_data ):
     if not self.ShouldUseNowInner( request_data ):
+      LOGGER.info("ShouldUseNowInner False")
       self._completions_cache.Invalidate()
       return False
 
@@ -134,6 +137,7 @@ class Completer( object ):
 
   def ShouldUseNowInner( self, request_data ):
     if not self.prepared_triggers:
+      LOGGER.info("ShouldUseNowInner False 1")
       return False
     current_line = request_data[ 'line_value' ]
     start_column = request_data[ 'start_column' ] - 1
@@ -151,6 +155,7 @@ class Completer( object ):
   # It's highly likely you DON'T want to override this function but the *Inner
   # version of it.
   def ComputeCandidates( self, request_data ):
+    LOGGER.info("ComputeCandidates Base")
     if ( not ForceSemanticCompletion( request_data ) and
          not self.ShouldUseNow( request_data ) ):
       return []
@@ -170,6 +175,7 @@ class Completer( object ):
     if cache_completions:
       return cache_completions
     else:
+      LOGGER.info("Request Data = %s", request_data)
       raw_completions = self.ComputeCandidatesInner( request_data )
       self._completions_cache.Update(
           request_data[ 'line_num' ],
