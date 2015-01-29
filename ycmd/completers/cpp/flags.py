@@ -83,6 +83,10 @@ class Flags( object ):
       return sanitized_flags
 
   def ParentForFile( self, filename ):
+    """Get the file name in which filename was included. This is for code completion 
+    case like : clang --code-completion-at a.c:1:2 b.c 
+    This additional cache will consume extra memory depends on the number of souce file.
+    """
     try:
       LOGGER.info('parent_for_file[ %s ] = %s', filename, self.parent_for_file[ filename ])
       return self.parent_for_file[ filename ]
@@ -95,6 +99,7 @@ class Flags( object ):
           raise NoExtraConfDetected
         LOGGER.info('NO extra module detected')
         return None
+
       result = _CallExtraConfParentForFile ( module, filename )
       self.parent_for_file[filename] = result
       LOGGER.info('ParentForFile[ %s ] = %s', filename, result)
