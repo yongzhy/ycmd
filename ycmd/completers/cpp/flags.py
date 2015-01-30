@@ -23,7 +23,6 @@ import inspect
 from ycmd import extra_conf_store
 from ycmd.utils import ToUtf8IfNeeded
 from ycmd.responses import NoExtraConfDetected
-import logging
 
 INCLUDE_FLAGS = [ '-isystem', '-I', '-iquote', '--sysroot=', '-isysroot',
                   '-include', '-iframework', '-F' ]
@@ -33,8 +32,6 @@ STATE_FLAGS_TO_SKIP = set(['-c', '-MP'])
 # The -M* flags spec:
 #   https://gcc.gnu.org/onlinedocs/gcc-4.9.0/gcc/Preprocessor-Options.html
 FILE_FLAGS_TO_SKIP = set(['-MD', '-MMD', '-MF', '-MT', '-MQ', '-o'])
-
-LOGGER = logging.getLogger( "ycmd" )
 
 class Flags( object ):
   """Keeps track of the flags necessary to compile a file.
@@ -88,21 +85,17 @@ class Flags( object ):
     This additional cache will consume extra memory depends on the number of souce file.
     """
     try:
-      LOGGER.info('parent_for_file[ %s ] = %s', filename, self.parent_for_file[ filename ])
       return self.parent_for_file[ filename ]
     except KeyError:
       module = extra_conf_store.ModuleForSourceFile( filename )
       if not module:
         if not self.no_extra_conf_file_warning_posted:
           self.no_extra_conf_file_warning_posted = True
-          LOGGER.info('NO extra conf detected')
           raise NoExtraConfDetected
-        LOGGER.info('NO extra module detected')
         return None
 
       result = _CallExtraConfParentForFile ( module, filename )
       self.parent_for_file[filename] = result
-      LOGGER.info('ParentForFile[ %s ] = %s', filename, result)
       return result
 
   def UserIncludePaths( self, filename ):

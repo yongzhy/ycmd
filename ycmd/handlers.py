@@ -49,8 +49,7 @@ bottle.Request.MEMFILE_MAX = 1000 * 1024
 
 # TODO: rename these to _lower_case
 SERVER_STATE = None
-LOGGER = logging.getLogger( "ycmd" )
-#LOGGER = logging.getLogger( __name__ )
+LOGGER = logging.getLogger( __name__ )
 app = bottle.Bottle()
 
 
@@ -92,7 +91,6 @@ def GetCompletions():
   request_data = RequestWrap( request.json )
   do_filetype_completion = SERVER_STATE.ShouldUseFiletypeCompleter(
     request_data )
-  LOGGER.debug( 'Using filetype completion: %s', do_filetype_completion )
   filetypes = request_data[ 'filetypes' ]
   completer = ( SERVER_STATE.GetFiletypeCompleter( filetypes ) if
                 do_filetype_completion else

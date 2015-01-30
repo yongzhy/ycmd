@@ -24,9 +24,6 @@ from ycmd.utils import ForceSemanticCompletion
 from ycmd.completers.general.general_completer_store import (
     GeneralCompleterStore )
 from ycmd.completers.completer_utils import PathToFiletypeCompleterPluginLoader
-import logging
-
-LOGGER = logging.getLogger( "ycmd" )
 
 class ServerState( object ):
   def __init__( self, user_options ):
@@ -102,12 +99,10 @@ class ServerState( object ):
 
   def ShouldUseFiletypeCompleter( self, request_data ):
     filetypes = request_data[ 'filetypes' ]
-    LOGGER.info("ShouldUseFiletypeCompleter 1")
     if self.FiletypeCompletionUsable( filetypes ):
       return ( ForceSemanticCompletion( request_data ) or
                self.GetFiletypeCompleter( filetypes ).ShouldUseNow(
                  request_data ) )
-    LOGGER.info("ShouldUseFiletypeCompleter 2")
     return False
 
 

@@ -20,9 +20,6 @@
 from collections import defaultdict
 import os
 import re
-import logging
-
-LOGGER = logging.getLogger( "ycmd" )
 
 class PreparedTriggers( object ):
   def __init__( self,  user_trigger_map = None, filetype_set = None ):
@@ -95,11 +92,8 @@ def _RegexTriggerMatches( trigger, line_value, start_column ):
 
 # start_column is 0-based
 def _MatchesSemanticTrigger( line_value, start_column, trigger_list ):
-  LOGGER.info( 'line_value %s', line_value)
-  LOGGER.info( 'start_column %s', start_column)
   line_length = len( line_value )
   if not line_length or start_column > line_length:
-    LOGGER.info( '_MatchesSemanticTrigger NG 1' )
     return False
 
   match = False
@@ -108,9 +102,7 @@ def _MatchesSemanticTrigger( line_value, start_column, trigger_list ):
         if isinstance( trigger, basestring ) else
         _RegexTriggerMatches( trigger, line_value, start_column ) )
     if match:
-      LOGGER.info( '_MatchesSemanticTrigger OK' )
       return True
-  LOGGER.info( '_MatchesSemanticTrigger NG 2' )
   return False
 
 

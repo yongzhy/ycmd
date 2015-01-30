@@ -18,9 +18,6 @@
 from ycmd.utils import ToUnicodeIfNeeded, ToUtf8IfNeeded
 from ycmd.identifier_utils import StartOfLongestIdentifierEndingAtIndex
 from ycmd.request_validation import EnsureRequestValid
-import logging
-
-LOGGER = logging.getLogger( "ycmd" )
 
 # TODO: Change the custom computed (and other) keys to be actual properties on
 # the object.
@@ -62,9 +59,6 @@ class RequestWrap( object ):
   def _CurrentLine( self ):
     current_file = self._request[ 'filepath' ]
     contents = self._request[ 'file_data' ][ current_file ][ 'contents' ]
-
-    LOGGER.info("current_file =%s", current_file)
-    LOGGER.info("contents = %s", contents)
 
     # Handling ''.splitlines() returning [] instead of ['']
     if contents is not None and len( contents ) == 0:
