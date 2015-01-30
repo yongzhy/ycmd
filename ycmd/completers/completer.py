@@ -170,7 +170,6 @@ class Completer( object ):
     if cache_completions:
       return cache_completions
     else:
-      LOGGER.info("Request Data = %s", request_data)
       raw_completions = self.ComputeCandidatesInner( request_data )
       self._completions_cache.Update(
           request_data[ 'line_num' ],
