@@ -132,6 +132,7 @@ ClangCompleter::CandidatesForLocationInFile(
 
 Location ClangCompleter::GetDeclarationLocation(
   const std::string &filename,
+  const std::string &gotofilename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files,
@@ -145,12 +146,13 @@ Location ClangCompleter::GetDeclarationLocation(
     return Location();
   }
 
-  return unit->GetDeclarationLocation( line, column, unsaved_files, reparse );
+  return unit->GetDeclarationLocation( gotofilename, line, column, unsaved_files, reparse );
 }
 
 
 Location ClangCompleter::GetDefinitionLocation(
   const std::string &filename,
+  const std::string &gotofilename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files,
@@ -164,7 +166,7 @@ Location ClangCompleter::GetDefinitionLocation(
     return Location();
   }
 
-  return unit->GetDefinitionLocation( line, column, unsaved_files, reparse );
+  return unit->GetDefinitionLocation( gotofilename, line, column, unsaved_files, reparse );
 }
 
 

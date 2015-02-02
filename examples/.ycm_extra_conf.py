@@ -154,3 +154,4 @@ def ParentForFile( filename ):
       for line in lines:
         if line.lower().find(filename) == 0:
           return line[len(filename)+1:]
+  return filename

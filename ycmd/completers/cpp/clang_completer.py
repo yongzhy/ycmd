@@ -137,6 +137,9 @@ class ClangCompleter( Completer ):
     filename = request_data[ 'filepath' ]
     if not filename:
       raise ValueError( INVALID_FILE_MESSAGE )
+    
+    gotofilename = filename
+    filename = self._ParentForRequest( filename )
 
     flags = self._FlagsForRequest( request_data )
     if not flags:
@@ -147,6 +150,7 @@ class ClangCompleter( Completer ):
     column = request_data[ 'column_num' ]
     return getattr( self._completer, goto_function )(
         ToUtf8IfNeeded( filename ),
+        ToUtf8IfNeeded( gotofilename ),
         line,
         column,
         files,

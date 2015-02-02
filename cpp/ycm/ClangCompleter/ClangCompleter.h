@@ -60,6 +60,7 @@ public:
 
   Location GetDeclarationLocation(
     const std::string &filename,
+    const std::string &gotofilename,
     int line,
     int column,
     const std::vector< UnsavedFile > &unsaved_files,
@@ -68,6 +69,7 @@ public:
 
   Location GetDefinitionLocation(
     const std::string &filename,
+    const std::string &gotofilename,
     int line,
     int column,
     const std::vector< UnsavedFile > &unsaved_files,

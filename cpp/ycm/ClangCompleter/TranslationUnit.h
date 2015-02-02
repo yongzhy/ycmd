@@ -68,12 +68,14 @@ public:
     const std::vector< UnsavedFile > &unsaved_files );
 
   Location GetDeclarationLocation(
+    const std::string &gotofilename,
     int line,
     int column,
     const std::vector< UnsavedFile > &unsaved_files,
     bool reparse = true );
 
   Location GetDefinitionLocation(
+    const std::string &gotofilename,
     int line,
     int column,
     const std::vector< UnsavedFile > &unsaved_files,
@@ -87,7 +89,7 @@ private:
 
   void UpdateLatestDiagnostics();
 
-  CXCursor GetCursor( int line, int column );
+  CXCursor GetCursor( const std::string &gotofilename, int line, int column );
 
   /////////////////////////////
   // PRIVATE MEMBER VARIABLES
