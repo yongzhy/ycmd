@@ -21,7 +21,6 @@ from collections import defaultdict
 import os
 import re
 
-
 class PreparedTriggers( object ):
   def __init__( self,  user_trigger_map = None, filetype_set = None ):
     user_prepared_triggers = ( _FiletypeTriggerDictFromSpec(

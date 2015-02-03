@@ -146,3 +146,12 @@ def FlagsForFile( filename, **kwargs ):
     'do_cache': True
   }
 
+def ParentForFile( filename ):
+  if os.path.exists(".ycm_clang_input"):
+    filename = filename.lower()
+    with open(".ycm_clang_input") as f:
+      lines = f.read().splitlines()
+      for line in lines:
+        if line.lower().find(filename) == 0:
+          return line[len(filename)+1:]
+  return filename
