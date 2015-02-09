@@ -25,7 +25,6 @@ from ycmd.completers.general.general_completer_store import (
     GeneralCompleterStore )
 from ycmd.completers.completer_utils import PathToFiletypeCompleterPluginLoader
 
-
 class ServerState( object ):
   def __init__( self, user_options ):
     self._user_options = user_options

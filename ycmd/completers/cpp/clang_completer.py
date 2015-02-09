@@ -79,6 +79,9 @@ class ClangCompleter( Completer ):
     if not filename:
       return
 
+    compfilename = filename
+    filename = self._ParentForRequest( filename )
+
     if self._completer.UpdatingTranslationUnit( ToUtf8IfNeeded( filename ) ):
       raise RuntimeError( PARSING_FILE_MESSAGE )
 
@@ -92,6 +95,7 @@ class ClangCompleter( Completer ):
     with self._files_being_compiled.GetExclusive( filename ):
       results = self._completer.CandidatesForLocationInFile(
           ToUtf8IfNeeded( filename ),
+          ToUtf8IfNeeded( compfilename ),
           line,
           column,
           files,
@@ -133,6 +137,9 @@ class ClangCompleter( Completer ):
     filename = request_data[ 'filepath' ]
     if not filename:
       raise ValueError( INVALID_FILE_MESSAGE )
+    
+    gotofilename = filename
+    filename = self._ParentForRequest( filename )
 
     flags = self._FlagsForRequest( request_data )
     if not flags:
@@ -143,6 +150,7 @@ class ClangCompleter( Completer ):
     column = request_data[ 'column_num' ]
     return getattr( self._completer, goto_function )(
         ToUtf8IfNeeded( filename ),
+        ToUtf8IfNeeded( gotofilename ),
         line,
         column,
         files,
@@ -264,6 +272,8 @@ class ClangCompleter( Completer ):
     client_data = request_data.get( 'extra_conf_data', None )
     return self._flags.FlagsForFile( filename, client_data = client_data )
 
+  def _ParentForRequest( self, filename ):
+    return self._flags.ParentForFile( ToUtf8IfNeeded(filename) )
 
 def ConvertCompletionData( completion_data ):
   return responses.BuildCompletionData(

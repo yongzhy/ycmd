@@ -36,10 +36,12 @@ namespace YouCompleteMe {
 namespace {
 
 unsigned editingOptions() {
-  return ( CXTranslationUnit_DetailedPreprocessingRecord |
-           clang_defaultEditingTranslationUnitOptions() ) |
-         CXTranslationUnit_IncludeBriefCommentsInCodeCompletion;
+  return CXTranslationUnit_DetailedPreprocessingRecord |
+         CXTranslationUnit_Incomplete |
+         CXTranslationUnit_IncludeBriefCommentsInCodeCompletion |
+         clang_defaultEditingTranslationUnitOptions();
 }
+
 
 unsigned completionOptions() {
   return clang_defaultCodeCompleteOptions() |
@@ -151,6 +153,7 @@ void TranslationUnit::ReparseForIndexing(
 
 
 std::vector< CompletionData > TranslationUnit::CandidatesForLocation(
+  const std::string &compfilename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files ) {
@@ -176,7 +179,7 @@ std::vector< CompletionData > TranslationUnit::CandidatesForLocation(
 
   CodeCompleteResultsWrap results(
     clang_codeCompleteAt( clang_translation_unit_,
-                          filename_.c_str(),
+                          compfilename.c_str(),
                           line,
                           column,
                           const_cast<CXUnsavedFile *>( unsaved ),
@@ -190,6 +193,7 @@ std::vector< CompletionData > TranslationUnit::CandidatesForLocation(
 }
 
 Location TranslationUnit::GetDeclarationLocation(
+  const std::string &gotofilename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files,
@@ -202,7 +206,7 @@ Location TranslationUnit::GetDeclarationLocation(
   if ( !clang_translation_unit_ )
     return Location();
 
-  CXCursor cursor = GetCursor( line, column );
+  CXCursor cursor = GetCursor( gotofilename, line, column );
 
   if ( !CursorIsValid( cursor ) )
     return Location();
@@ -216,6 +220,7 @@ Location TranslationUnit::GetDeclarationLocation(
 }
 
 Location TranslationUnit::GetDefinitionLocation(
+  const std::string &gotofilename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files,
@@ -228,7 +233,7 @@ Location TranslationUnit::GetDefinitionLocation(
   if ( !clang_translation_unit_ )
     return Location();
 
-  CXCursor cursor = GetCursor( line, column );
+  CXCursor cursor = GetCursor( gotofilename, line, column );
 
   if ( !CursorIsValid( cursor ) )
     return Location();
@@ -301,12 +306,12 @@ void TranslationUnit::UpdateLatestDiagnostics() {
   }
 }
 
-CXCursor TranslationUnit::GetCursor( int line, int column ) {
+CXCursor TranslationUnit::GetCursor( const std::string &gotofilename, int line, int column ) {
   // ASSUMES A LOCK IS ALREADY HELD ON clang_access_mutex_!
   if ( !clang_translation_unit_ )
     return clang_getNullCursor();
 
-  CXFile file = clang_getFile( clang_translation_unit_, filename_.c_str() );
+  CXFile file = clang_getFile( clang_translation_unit_, gotofilename.c_str() );
   CXSourceLocation source_location = clang_getLocation(
                                        clang_translation_unit_,
                                        file,

@@ -67,7 +67,7 @@ def CustomPythonCmakeArgs():
   else:
     which_python = sh.python(
       '-c',
-      'import sys;i=sys.version_info;print "python%d.%d" % (i.major, i.minor)'
+      'import sys;i=sys.version_info;print "python%d.%d" % (i[0], i[1])'
       ).strip()
     lib_python = '{0}/lib/lib{1}'.format( python_prefix, which_python ).strip()
 
@@ -110,6 +110,7 @@ def GetCmakeArgs( parsed_args ):
   cmake_args = []
   if parsed_args.clang_completer:
     cmake_args.append( '-DUSE_CLANG_COMPLETER=ON' )
+    cmake_args.append( '-DPATH_TO_LLVM_ROOT=/opt/clang3.4' )
 
   if parsed_args.system_libclang:
     cmake_args.append( '-DUSE_SYSTEM_LIBCLANG=ON' )

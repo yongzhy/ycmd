@@ -33,7 +33,6 @@ STATE_FLAGS_TO_SKIP = set(['-c', '-MP'])
 #   https://gcc.gnu.org/onlinedocs/gcc-4.9.0/gcc/Preprocessor-Options.html
 FILE_FLAGS_TO_SKIP = set(['-MD', '-MMD', '-MF', '-MT', '-MQ', '-o'])
 
-
 class Flags( object ):
   """Keeps track of the flags necessary to compile a file.
   The flags are loaded from user-created python files (hereafter referred to as
@@ -42,6 +41,7 @@ class Flags( object ):
   def __init__( self ):
     # It's caches all the way down...
     self.flags_for_file = {}
+    self.parent_for_file = {}
     self.special_clang_flags = _SpecialClangIncludes()
     self.no_extra_conf_file_warning_posted = False
 
@@ -79,6 +79,24 @@ class Flags( object ):
         self.flags_for_file[ filename ] = sanitized_flags
       return sanitized_flags
 
+  def ParentForFile( self, filename ):
+    """Get the file name in which filename was included. This is for code completion 
+    case like : clang --code-completion-at a.c:1:2 b.c 
+    This additional cache will consume extra memory depends on the number of souce file.
+    """
+    try:
+      return self.parent_for_file[ filename ]
+    except KeyError:
+      module = extra_conf_store.ModuleForSourceFile( filename )
+      if not module:
+        if not self.no_extra_conf_file_warning_posted:
+          self.no_extra_conf_file_warning_posted = True
+          raise NoExtraConfDetected
+        return None
+
+      result = _CallExtraConfParentForFile ( module, filename )
+      self.parent_for_file[filename] = result
+      return result
 
   def UserIncludePaths( self, filename ):
     flags = self.FlagsForFile( filename, False )
@@ -118,6 +136,12 @@ def _CallExtraConfFlagsForFile( module, filename, client_data ):
   else:
     return module.FlagsForFile( filename )
 
+def _CallExtraConfParentForFile( module, filename):
+  filename = ToUtf8IfNeeded( filename )
+  try:
+    return module.ParentForFile( filename )
+  except:
+    return filename
 
 def PrepareFlagsForClang( flags, filename ):
   flags = _RemoveUnusedFlags( flags, filename )
