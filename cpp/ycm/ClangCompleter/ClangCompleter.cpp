@@ -171,6 +171,7 @@ Location ClangCompleter::GetDefinitionLocation(
 
 std::string ClangCompleter::GetTypeAtLocation(
   const std::string &filename,
+  const std::string &gotofilename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files,
@@ -185,11 +186,12 @@ std::string ClangCompleter::GetTypeAtLocation(
     return "no unit";
   }
 
-  return unit->GetTypeAtLocation( line, column, unsaved_files, reparse );
+  return unit->GetTypeAtLocation( gotofilename, line, column, unsaved_files, reparse);
 }
 
 std::string ClangCompleter::GetEnclosingFunctionAtLocation(
   const std::string &filename,
+  const std::string &gotofilename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files,
@@ -204,7 +206,8 @@ std::string ClangCompleter::GetEnclosingFunctionAtLocation(
     return "no unit";
   }
 
-  return unit->GetEnclosingFunctionAtLocation( line, 
+  return unit->GetEnclosingFunctionAtLocation( gotofilename,
+											   line, 
                                                column, 
                                                unsaved_files, 
                                                reparse );

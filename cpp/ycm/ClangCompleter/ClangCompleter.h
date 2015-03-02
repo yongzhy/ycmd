@@ -78,6 +78,7 @@ public:
 
   std::string GetTypeAtLocation(
     const std::string &filename,
+	const std::string &gotofilename,
     int line,
     int column,
     const std::vector< UnsavedFile > &unsaved_files,
@@ -86,6 +87,7 @@ public:
 
   std::string GetEnclosingFunctionAtLocation(
     const std::string &filename,
+	const std::string &gotofilename,
     int line,
     int column,
     const std::vector< UnsavedFile > &unsaved_files,

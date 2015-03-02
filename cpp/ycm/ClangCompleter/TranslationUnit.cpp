@@ -247,6 +247,7 @@ Location TranslationUnit::GetDefinitionLocation(
 }
 
 std::string TranslationUnit::GetTypeAtLocation(
+  const std::string &filename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files,
@@ -260,7 +261,7 @@ std::string TranslationUnit::GetTypeAtLocation(
   if ( !clang_translation_unit_ )
     return "Internal error: no translation unit";
 
-  CXCursor cursor = GetCursor( line, column );
+  CXCursor cursor = GetCursor( filename, line, column );
 
   if ( !CursorIsValid( cursor ) )
     return "Internal error: cursor not valid";
@@ -304,6 +305,7 @@ std::string TranslationUnit::GetTypeAtLocation(
 }
 
 std::string TranslationUnit::GetEnclosingFunctionAtLocation(
+  const std::string &filename,
   int line,
   int column,
   const std::vector< UnsavedFile > &unsaved_files,
@@ -317,7 +319,7 @@ std::string TranslationUnit::GetEnclosingFunctionAtLocation(
   if ( !clang_translation_unit_ )
     return "Internal error: no translation unit";
 
-  CXCursor cursor = GetCursor( line, column );
+  CXCursor cursor = GetCursor( filename, line, column );
 
   if ( !CursorIsValid( cursor ) )
     return "Internal error: cursor not valid";
